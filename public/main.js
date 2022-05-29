@@ -7,7 +7,7 @@ const messageDiv = document.querySelector('#message')
 update.addEventListener('click', _ => {
     fetch('/quotes', {
         method: 'put', 
-        headers: {'Content-type': 'application/json'},
+        headers: {'Content-Type': 'application/json'},
         body: JSON.stringify({
             name: 'Darth Vadar', 
             quote: 'I find your lack of faith disturbing.'

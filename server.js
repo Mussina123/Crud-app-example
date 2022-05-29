@@ -29,15 +29,26 @@ MongoClient.connect(connectionString, { useUnifiedTopology: true })
     //    const curser = db.collection('quotes').find()
     //    console.log(curser)
        db.collection('quotes').find().toArray()
-       .then (results => {
-           console.log(results)
-           res.render('index.ejs', { quotes: results })
+       .then (quotes => {
+        //    console.log(results)
+           res.render('index.ejs', { quotes: quotes })
        })
        .catch(error => console.error(error))
   
         // res.sendFile(__dirname + '/index.html')
         // console.log(__dirname)
     })
+
+    app.post('/quotes', (req, res) => {
+        quotesCollection.insertOne(req.body)
+        .then(result => {
+            console.log(result)
+            res.redirect('/')
+        })
+        .catch(error => console.error(error))
+        // console.log(req.body)
+    })
+    
     app.put('/quotes', (req, res) => {
         console.log(req.body)
         quotesCollection.findOneAndUpdate(
@@ -61,31 +72,27 @@ MongoClient.connect(connectionString, { useUnifiedTopology: true })
         quotesCollection.deleteOne(
             { name: req.body.name }
           )
-            .then(result => res.json('Deleted Darth Vadar\'s Quote'))
-            .catch(error => console.error(error))
-            .then (result => {
-                if (result.deletedCount === 0) {
-                  return res.json('No quote to delete')
-                }
-                res.json(`Deleted Darth Vadar's quote`)
-              })
+          .then (result => {
+            if (result.deletedCount === 0) {
+              return res.json('No quote to delete')
+            }
+            res.json(`Deleted Darth Vadar's quote`)
+          })
               .catch(error => console.error(error))
           })
     
-    app.post('/quotes', (req, res) => {
-        quotesCollection.insertOne(req.body)
-        .then(result => {
-            console.log(result)
-            res.redirect('/')
-        })
-        .catch(error => console.error(error))
-        // console.log(req.body)
-    })
-    app.listen(3000, function() {
-        console.log('listening on port 3000')
+
+
+// Listen // 
+
+const isProduction = process.env.NODE_ENV = 'production'
+const port = isProduction ? 7500 : 3000
+
+    app.listen(port, function() {
+        console.log(`listening on port ${port}`)
     })
   })
-//   .catch(error => console.error(error))
+  .catch(error => console.error(error))
 
 
 
