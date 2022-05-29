@@ -16,12 +16,18 @@ MongoClient.connect(connectionString, { useUnifiedTopology: true })
     console.log('Connected to Database')
     const db = client.db('star-wars-quotes')
     const quotesCollection = db.collection('quotes')
+
+ // Middleware included //
     app.set('view engine', 'ejs')
-    // res.render(view, locals)
     app.use(bodyParser.urlencoded({ extended: true }))
+    app.use(express.static('public'))
+    app.use(bodyParser.json())
+
+// Routes //
+
     app.get('/', (req, res) => {
-       const curser = db.collection('quotes').find()
-       console.log(curser)
+    //    const curser = db.collection('quotes').find()
+    //    console.log(curser)
        db.collection('quotes').find().toArray()
        .then (results => {
            console.log(results)
@@ -32,6 +38,39 @@ MongoClient.connect(connectionString, { useUnifiedTopology: true })
         // res.sendFile(__dirname + '/index.html')
         // console.log(__dirname)
     })
+    app.put('/quotes', (req, res) => {
+        console.log(req.body)
+        quotesCollection.findOneAndUpdate(
+            { name: 'Yoda' },
+            {
+              $set: {
+                name: req.body.name,
+                quote: req.body.quote
+              }
+            },
+            {
+              upsert: true
+            }
+          )
+            .then(result => res.json('Success'))
+            .catch(error => console.error(error))
+            
+    })
+
+    app.delete('/quotes', (req, res) => {
+        quotesCollection.deleteOne(
+            { name: req.body.name }
+          )
+            .then(result => res.json('Deleted Darth Vadar\'s Quote'))
+            .catch(error => console.error(error))
+            .then (result => {
+                if (result.deletedCount === 0) {
+                  return res.json('No quote to delete')
+                }
+                res.json(`Deleted Darth Vadar's quote`)
+              })
+              .catch(error => console.error(error))
+          })
     
     app.post('/quotes', (req, res) => {
         quotesCollection.insertOne(req.body)
