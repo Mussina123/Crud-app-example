@@ -86,6 +86,7 @@ MongoClient.connect(connectionString, { useUnifiedTopology: true })
 // Listen // 
 
 const isProduction = process.env.NODE_ENV = 'production'
+// listening for dynamic port vs. static port // 
 const port = isProduction ? 7500 : 3000
 
     app.listen(port, function() {
