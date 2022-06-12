@@ -4,7 +4,8 @@ const res = require('express/lib/response');
 const app = express();
 const MongoClient = require('mongodb').MongoClient
 
-const connectionString = 'mongodb+srv://yodaisthebest:Eagles35$@cluster0.n0kynsu.mongodb.net/?retryWrites=true&w=majority'
+
+require('dotenv').config();
 
 // MongoClient.connect(connectionString, (err, client) => {
 //     if (err) return console.error(err)
